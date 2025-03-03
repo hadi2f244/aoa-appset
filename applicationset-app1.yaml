@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: aoa-argoset-app1
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+        - path: stage
+        - path: prod
+  template:
+    metadata:
+      name: "app1-{{path}}"
+    spec:
+      project: "default"
+      source:
+        repoURL: https://github.com/hadi2f244/aoa-argoset-app1.git
+        targetRevision: HEAD
+        path: "overlays/{{path}}"
+      destination:
+        server: https://kubernetes.default.svc
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
